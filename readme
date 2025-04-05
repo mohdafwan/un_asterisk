@@ -3,4 +3,7 @@ create a full backend with Node.js and Express with flutter with a complete yout
 
 2. Then create a important file called .env, touch with constant.js, index.js, app.js
 
+3. then create folder structure under src mkdir controllers db middlewares models routes utils 
 
+4. then set the prettierrc 
+5. then setup the DATABASE

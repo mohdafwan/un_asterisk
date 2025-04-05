@@ -4,10 +4,17 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js"
+    "dev": "nodemon src/index.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "mohdafwan",
   "license": "ISC",
-  "description": ""
+  "description": "Youtube clone using Node.js, Express, MongoDB, and React",
+  "devDependencies": {
+    "prettier": "^3.5.3"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "mongoose": "^8.13.2"
+  }
 }

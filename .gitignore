@@ -1,0 +1,17 @@
+node_modules/
+.env
+.DS_Store
+
+../readme
+*.log
+*.lock
+*.tgz
+*.zip
+*.tar
+*.tar.gz
+*.tar.bz2
+
+*.tar.xz
+*.tar.lz
+*.tar.lzma
+*.tar.lzo
