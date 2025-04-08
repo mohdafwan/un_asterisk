@@ -211,7 +211,6 @@ const updataUserAvatar = asyncHandler(async (req, res) => {
     })
 })
 
-
 const updateUserCoverImage = asyncHandler(async (req, res) => {
     const coverImageLocalPath = req.file?.path;
     if (!coverImageLocalPath) throw new ApiError(400, "Cover Image Is Missing")
@@ -234,6 +233,63 @@ const updateUserCoverImage = asyncHandler(async (req, res) => {
         .catch((error) => {
             throw new ApiError(500, error.message || "Something went wrong");
         })
+})
+
+const getUserChannel = asyncHandler(async (req, res) => {
+    const { username } = req.params
+    if (!username?.trim()) throw new ApiError(400, "Username is required")
+
+    const channel = await User.aggregate([
+        {
+            $match: {
+                username: username?.trim().toLowerCase()
+            },
+        },
+        {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "channel",
+                as: "subscribers",
+            }
+        }, {
+            $lookup: {
+                from: "subscriptions",
+                localField: "_id",
+                foreignField: "subscriber",
+                as: "subscribedTo",
+            }
+        }, {
+            $addFields: {
+                subscriberCount: {
+                    $size: "$subscribers"
+                },
+                subscribedToCount: {
+                    $size: "$subscribedTo"
+                },
+                isSubscribed: {
+                    $cond: {
+                        if: {
+                            $in: [req.user?._id, "$subscribers.subscriber"]
+                        },
+                        then: true,
+                        else: false
+                    }
+                }
+            }
+        }, {
+            $project: {
+                fullname: 1,
+                username: 1,
+                subscriberCount: 1,
+                subscribedToCount: 1,
+                isSubscribed: 1,
+                avatar: 1,
+                coverImage: 1,
+                email: 1
+            }
+        }
+    ])
 })
 
 const logoutUser = asyncHandler(async (req, res) => {
@@ -261,4 +317,4 @@ const logoutUser = asyncHandler(async (req, res) => {
         .json(new ApiResponse(200, {}, "User logged Out"))
 })
 
-export { registerUser, loginUser, logoutUser, refreshAccessToken, currentCurrentUserPassword, updateAccountDetails, updataUserAvatar };
+export { registerUser, loginUser, logoutUser, refreshAccessToken, currentCurrentUserPassword, updateAccountDetails, updataUserAvatar, updateUserCoverImage, getUserChannel };
